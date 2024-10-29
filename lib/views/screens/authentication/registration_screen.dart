@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:turfit/controllers/auth_controller.dart';
 import 'package:turfit/views/screens/authentication/login_screen.dart';
 
 class RegistrationScreen extends StatelessWidget {
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AuthController _authController = AuthController();
+  late String email;
+  late String fullName;
+  late String password;
   @override
   Widget build(BuildContext context) {
     // Getting the total height of the screen
@@ -11,7 +16,8 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
     return Scaffold(
       backgroundColor: Colors.white, // Set background color to white
-      body: SingleChildScrollView( // Use SingleChildScrollView to prevent overflow
+      body: SingleChildScrollView(
+        // Use SingleChildScrollView to prevent overflow
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -22,7 +28,8 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                   "assets/images/neymar2.jpg",
                   width: double.infinity,
                   height: screenHeight * 0.25,
-                  fit: BoxFit.cover, // This ensures the image covers the entire area
+                  fit: BoxFit
+                      .cover, // This ensures the image covers the entire area
                 ),
                 SizedBox(height: 30),
                 Padding(
@@ -40,7 +47,8 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                 ),
                 SizedBox(height: 10), // Added spacing for better layout
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 10.0),
                   child: Text(
                     "Full Name",
                     style: GoogleFonts.getFont(
@@ -55,17 +63,19 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    validator: (value){
-                      if(value!.isEmpty)
-                        {
-                          return "Please enter your full name";
-                        }
-                      else{
+                    onChanged: (value) {
+                      fullName = value;
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please enter your full name";
+                      } else {
                         return null;
                       }
                     },
                     decoration: InputDecoration(
-                      fillColor: Colors.grey[200], // Input fields' background color (light gray)
+                      fillColor: Colors.grey[
+                          200], // Input fields' background color (light gray)
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -86,7 +96,8 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                           height: 20,
                           width: 20,
                         ),
-                      ),),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 10), // Added spacing for better layout
@@ -106,17 +117,19 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    validator: (value){
-                      if(value!.isEmpty)
-                        {
-                          return 'enter your email';
-                        }
-                      else{
+                    onChanged: (value) {
+                      email = value;
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'enter your email';
+                      } else {
                         return null;
                       }
                     },
                     decoration: InputDecoration(
-                      fillColor: Colors.grey[200], // Input fields' background color (light gray)
+                      fillColor: Colors.grey[
+                          200], // Input fields' background color (light gray)
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -158,18 +171,19 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    validator: (value)
-                    {
-                      if(value!.isEmpty)
-                        {
-                          return "Please enter your Password";
-                        }
-                      else{
+                    onChanged: (value) {
+                      password = value;
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please enter your Password";
+                      } else {
                         return null;
                       }
                     },
                     decoration: InputDecoration(
-                      fillColor: Colors.grey[200], // Input field's background color (light gray)
+                      fillColor: Colors.grey[
+                          200], // Input field's background color (light gray)
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -213,7 +227,8 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      fillColor: Colors.grey[200], // Input field's background color (light gray)
+                      fillColor: Colors.grey[
+                          200], // Input field's background color (light gray)
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -240,28 +255,48 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                   ),
                 ),
                 SizedBox(height: 10), // Added spacing for better layout
-            
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Already have an Account ? ', style: GoogleFonts.getFont('Lato', fontSize: 15),),
+                    Text(
+                      'Already have an Account ? ',
+                      style: GoogleFonts.getFont('Lato', fontSize: 15),
+                    ),
                     InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return LoginScreen();
-                          },),);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return LoginScreen();
+                              },
+                            ),
+                          );
                         },
-                        child: Text('Sign In', style: GoogleFonts.getFont('Lato', fontWeight: FontWeight.bold, fontSize: 15, color: Colors.orange),))
+                        child: Text(
+                          'Sign In',
+                          style: GoogleFonts.getFont('Lato',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.orange),
+                        ))
                   ],
                 ),
                 SizedBox(height: 10),
                 Center(
                   child: InkWell(
-                    onTap: (){
-                      if(_formKey.currentState!.validate()){
-                        print("correct");
-                      }
-                      else{
+                    onTap: () async {
+                      if (_formKey.currentState!.validate()) {
+                        await _authController.signUpUsers(
+                            context: context,
+                            email: email,
+                            fullName: fullName,
+                            password: password);
+                        print(email);
+                        print(fullName);
+                        print(password);
+                      } else {
                         print("failed");
                       }
                     },
@@ -272,9 +307,16 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                         height: 50,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            gradient: const LinearGradient(colors: [Colors.black, Colors.black45])
-                        ),
-                        child: Center(child: Text("Register", style: GoogleFonts.getFont('Lato', fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),)),
+                            gradient: const LinearGradient(
+                                colors: [Colors.black, Colors.black45])),
+                        child: Center(
+                            child: Text(
+                          "Register",
+                          style: GoogleFonts.getFont('Lato',
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        )),
                       ),
                     ),
                   ),
