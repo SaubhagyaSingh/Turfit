@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:turfit/controllers/auth_controller.dart';
 import 'package:turfit/views/screens/authentication/registration_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-
-final GlobalKey<FormState> _formkey=GlobalKey<FormState>();
-
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final AuthController _authController = AuthController();
+  late String email;
+  late String password;
   @override
   Widget build(BuildContext context) {
     // Getting the total height of the screen
@@ -13,7 +15,8 @@ final GlobalKey<FormState> _formkey=GlobalKey<FormState>();
 
     return Scaffold(
       backgroundColor: Colors.white, // Set background color to white
-      body: SingleChildScrollView( // Use SingleChildScrollView to prevent overflow
+      body: SingleChildScrollView(
+        // Use SingleChildScrollView to prevent overflow
         child: Form(
           key: _formkey,
           child: Column(
@@ -23,7 +26,8 @@ final GlobalKey<FormState> _formkey=GlobalKey<FormState>();
                 "assets/images/messi.jpg",
                 width: double.infinity,
                 height: screenHeight * 0.45,
-                fit: BoxFit.cover, // This ensures the image covers the entire area
+                fit: BoxFit
+                    .cover, // This ensures the image covers the entire area
               ),
               SizedBox(height: 20),
               Padding(
@@ -40,7 +44,8 @@ final GlobalKey<FormState> _formkey=GlobalKey<FormState>();
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0, vertical: 10.0),
                 child: Text(
                   "Email",
                   style: GoogleFonts.getFont(
@@ -55,16 +60,19 @@ final GlobalKey<FormState> _formkey=GlobalKey<FormState>();
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  validator: (value){
-                    if(value!.isEmpty){
+                  onChanged: (value) {
+                    email = value;
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
                       return "Enter your Email";
-                    }
-                    else{
+                    } else {
                       return null;
                     }
                   },
                   decoration: InputDecoration(
-                    fillColor: Colors.grey[200], // Input fields' background color (light gray)
+                    fillColor: Colors.grey[
+                        200], // Input fields' background color (light gray)
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -106,17 +114,19 @@ final GlobalKey<FormState> _formkey=GlobalKey<FormState>();
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  validator: (value){
-                    if(value!.isEmpty)
-                      {
-                        return "Enter your password";
-                      }
-                    else{
+                  onChanged: (value) {
+                    password = value;
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Enter your password";
+                    } else {
                       return null;
                     }
                   },
                   decoration: InputDecoration(
-                    fillColor: Colors.grey[200], // Input field's background color (light gray)
+                    fillColor: Colors.grey[
+                        200], // Input field's background color (light gray)
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -143,38 +153,55 @@ final GlobalKey<FormState> _formkey=GlobalKey<FormState>();
                 ),
               ),
               SizedBox(height: 10),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Need an Account ? ',style: GoogleFonts.getFont('Lato',fontSize: 15),),
+                  Text(
+                    'Need an Account ? ',
+                    style: GoogleFonts.getFont('Lato', fontSize: 15),
+                  ),
                   InkWell(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context){
-                          return RegistrationScreen();
-                        },),);
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return RegistrationScreen();
+                            },
+                          ),
+                        );
                       },
-                      child: Text('Sign Up',style: GoogleFonts.getFont('Lato',fontWeight: FontWeight.bold,fontSize: 15,color: Colors.orange),))],
+                      child: Text(
+                        'Sign Up',
+                        style: GoogleFonts.getFont('Lato',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.orange),
+                      ))
+                ],
               ),
               SizedBox(height: 20),
               Center(
                 child: InkWell(
-                  onTap: (){
-                    if(_formkey.currentState!.validate()){
-                      print("pass");
-                    }
-                    else{
-                      print("false");
-                    }
+                  onTap: () async {
+                    await _authController.signInUsers(
+                        context: context, email: email, password: password);
                   },
                   child: Container(
                     width: 250,
                     height: 50,
-                    decoration:BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      gradient: const LinearGradient(colors: [Colors.black,Colors.black45])
-                    ),
-                    child: Center(child: Text("Login",style: GoogleFonts.getFont('Lato',fontSize: 20,color: Colors.white,fontWeight: FontWeight.bold),)),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        gradient: const LinearGradient(
+                            colors: [Colors.black, Colors.black45])),
+                    child: Center(
+                        child: Text(
+                      "Login",
+                      style: GoogleFonts.getFont('Lato',
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    )),
                   ),
                 ),
               ),

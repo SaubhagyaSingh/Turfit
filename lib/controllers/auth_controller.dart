@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:turfit/global_variables.dart';
 import 'package:turfit/models/user.dart';
@@ -19,7 +21,8 @@ class AuthController {
           state: '',
           city: '',
           locality: '',
-          password: password);
+          password: password,
+          token: '');
       http.Response response = await http.post(Uri.parse('$uri/api/signup'),
           body: user.toJson(),
           headers: <String, String>{
@@ -31,6 +34,35 @@ class AuthController {
           onSuccess: () {
             showSnackBar(context, "Your Account has been created for you!");
           });
-    } catch (e) {}
+    } catch (e) {
+      print("Error:$e");
+    }
+  }
+
+  ///sign in users function
+
+  Future<void> signInUsers(
+      {required context,
+      required String email,
+      required String password}) async {
+    try {
+      http.Response response = await http.post(Uri.parse("$uri/api/signin"),
+          body: jsonEncode(
+            {'email': email, 'password': password},
+          ),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          });
+
+      //handle response
+      manageHttpResponse(
+          response: response,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, "Logged in Successfully");
+          });
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 }
