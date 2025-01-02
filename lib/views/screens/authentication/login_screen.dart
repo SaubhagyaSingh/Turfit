@@ -3,11 +3,31 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:turfit/controllers/auth_controller.dart';
 import 'package:turfit/views/screens/authentication/registration_screen.dart';
 
-class LoginScreen extends StatelessWidget {
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthController _authController = AuthController();
-  late String email;
-  late String password;
+  String email = '';
+  String password = '';
+  bool isLoading = false;
+
+  void loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    await _authController
+        .signInUsers(context: context, email: email, password: password)
+        .whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Getting the total height of the screen
@@ -18,7 +38,7 @@ class LoginScreen extends StatelessWidget {
       body: SingleChildScrollView(
         // Use SingleChildScrollView to prevent overflow
         child: Form(
-          key: _formkey,
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start, // Align to top-left
             children: [
@@ -184,8 +204,9 @@ class LoginScreen extends StatelessWidget {
               Center(
                 child: InkWell(
                   onTap: () async {
-                    await _authController.signInUsers(
-                        context: context, email: email, password: password);
+                    if (_formKey.currentState!.validate()) {
+                      loginUser();
+                    }
                   },
                   child: Container(
                     width: 250,
@@ -195,13 +216,15 @@ class LoginScreen extends StatelessWidget {
                         gradient: const LinearGradient(
                             colors: [Colors.black, Colors.black45])),
                     child: Center(
-                        child: Text(
-                      "Login",
-                      style: GoogleFonts.getFont('Lato',
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    )),
+                        child: isLoading
+                            ? CircularProgressIndicator(color: Colors.black)
+                            : Text(
+                                "Login",
+                                style: GoogleFonts.getFont('Lato',
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              )),
                   ),
                 ),
               ),

@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:turfit/global_variables.dart';
 import 'package:turfit/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:turfit/services/manage_http_response.dart';
+import 'package:turfit/views/screens/authentication/login_screen.dart';
+import 'package:turfit/views/screens/home_screen.dart';
 
 class AuthController {
   Future<void> signUpUsers({
@@ -32,6 +35,8 @@ class AuthController {
           response: response,
           context: context,
           onSuccess: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => LoginScreen()));
             showSnackBar(context, "Your Account has been created for you!");
           });
     } catch (e) {
@@ -59,6 +64,10 @@ class AuthController {
           response: response,
           context: context,
           onSuccess: () {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => home_screen()),
+                (route) => false);
             showSnackBar(context, "Logged in Successfully");
           });
     } catch (e) {
