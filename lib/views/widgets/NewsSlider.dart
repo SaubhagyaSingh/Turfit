@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../global_variables.dart';
+import '../env/global_variables.dart';
 
 class NewsSlider extends StatefulWidget {
   @override

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:turfit/global_variables.dart';
+import 'package:turfit/views/env/global_variables.dart';
 import 'package:turfit/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:turfit/services/manage_http_response.dart';
