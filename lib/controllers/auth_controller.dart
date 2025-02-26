@@ -7,7 +7,7 @@ import 'package:turfit/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:turfit/services/manage_http_response.dart';
 import 'package:turfit/views/screens/authentication/login_screen.dart';
-import 'package:turfit/views/screens/home_screen.dart';
+import 'package:turfit/views/screens/HomeScreen.dart';
 
 class AuthController {
   Future<void> signUpUsers({
@@ -66,7 +66,7 @@ class AuthController {
           onSuccess: () {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => home_screen()),
+                MaterialPageRoute(builder: (context) => HomeScreen()),
                 (route) => false);
             showSnackBar(context, "Logged in Successfully");
           });

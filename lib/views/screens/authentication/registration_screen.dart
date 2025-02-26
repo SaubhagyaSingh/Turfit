@@ -11,52 +11,71 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthController _authController = AuthController();
-  late String email;
-  late String fullName;
-  late String password;
-  late String confirmPassword;
+
+  String email = "";
+  String fullName = "";
+  String password = "";
+  String confirmPassword = "";
   bool _isLoading = false;
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   Future<void> registerUser(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
-      await _authController
-          .signUpUsers(
-        context: context,
-        email: email,
-        fullName: fullName,
-        password: password,
-      )
-          .whenComplete(() {
+
+      try {
+        print("Registering user: $email");
+        await _authController.signUpUsers(
+          context: context,
+          email: email,
+          fullName: fullName,
+          password: password,
+        );
+
+        print("Registration successful, navigating to login...");
         _formKey.currentState!.reset();
         setState(() {
           _isLoading = false;
         });
-      });
+
+        // Navigate to login screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      } catch (e) {
+        print("Error during registration: $e");
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Registration failed: ${e.toString()}")),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Getting the total height of the screen
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white, // Set background color to white
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        // Use SingleChildScrollView to prevent overflow
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Align to top-left
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
                 "assets/images/neymar2.jpg",
                 width: double.infinity,
                 height: screenHeight * 0.25,
-                fit: BoxFit.cover, // Ensures the image covers the entire area
+                fit: BoxFit.cover,
               ),
               SizedBox(height: 30),
               Padding(
@@ -64,14 +83,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 child: Text(
                   "Create Your Account",
                   style: GoogleFonts.lato(
-                    color: Colors.black, // Text color set to black
+                    color: Colors.black,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.2,
                   ),
                 ),
               ),
-              SizedBox(height: 10), // Added spacing for better layout
+              SizedBox(height: 10),
               _buildTextField(
                 label: "Full Name",
                 onChanged: (value) => fullName = value,
@@ -82,31 +101,50 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               _buildTextField(
                 label: "Email",
                 onChanged: (value) => email = value,
-                validator: (value) =>
-                    value!.isEmpty ? "Please enter your email" : null,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Please enter your email";
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return "Enter a valid email";
+                  }
+                  return null;
+                },
                 icon: "assets/icons/email.png",
               ),
               _buildTextField(
                 label: "Password",
                 onChanged: (value) => password = value,
-                validator: (value) =>
-                    value!.isEmpty ? "Please enter your password" : null,
+                validator: (value) {
+                  if (value!.isEmpty) return "Please enter your password";
+                  if (value.length < 6)
+                    return "Password must be at least 6 characters";
+                  return null;
+                },
                 icon: "assets/icons/password.png",
                 isPassword: true,
+                isPasswordVisible: _isPasswordVisible,
+                toggleVisibility: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
               ),
               _buildTextField(
                 label: "Confirm Password",
                 onChanged: (value) => confirmPassword = value,
                 validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Please confirm your password";
-                  } else if (value != password) {
-                    return "Passwords do not match";
-                  }
+                  if (value!.isEmpty) return "Please confirm your password";
+                  if (value != password) return "Passwords do not match";
                   return null;
                 },
                 icon: "assets/icons/password.png",
                 isPassword: true,
+                isPasswordVisible: _isConfirmPasswordVisible,
+                toggleVisibility: () {
+                  setState(() {
+                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                  });
+                },
               ),
               SizedBox(height: 10),
               Row(
@@ -118,9 +156,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                        ),
                       );
                     },
                     child: Text(
@@ -178,15 +218,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     required String? Function(String?) validator,
     required String icon,
     bool isPassword = false,
+    bool isPasswordVisible = false,
+    VoidCallback? toggleVisibility,
   }) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         onChanged: onChanged,
         validator: validator,
-        obscureText: isPassword,
+        obscureText: isPassword ? !isPasswordVisible : false,
         decoration: InputDecoration(
-          fillColor: Colors.grey[200], // Input fields' background color
+          fillColor: Colors.grey[200],
           filled: true,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
@@ -196,7 +238,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           labelText: 'Enter your $label',
           labelStyle: GoogleFonts.nunitoSans(
             fontSize: 14,
-            color: Colors.black, // Label text color
+            color: Colors.black,
             letterSpacing: 0.1,
           ),
           prefixIcon: Padding(
@@ -207,8 +249,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               width: 20,
             ),
           ),
-          suffixIcon:
-              isPassword ? Icon(Icons.visibility, color: Colors.grey) : null,
+          suffixIcon: isPassword
+              ? IconButton(
+                  icon: Icon(
+                    isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
+                  onPressed: toggleVisibility,
+                )
+              : null,
         ),
       ),
     );

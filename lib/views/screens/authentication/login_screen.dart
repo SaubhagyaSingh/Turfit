@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:turfit/controllers/auth_controller.dart';
 import 'package:turfit/views/screens/authentication/registration_screen.dart';
+import 'package:turfit/views/screens/nav_screens/BaseScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,49 +15,58 @@ class _LoginScreenState extends State<LoginScreen> {
   String email = '';
   String password = '';
   bool isLoading = false;
+  bool isPasswordVisible = false; // Toggle for password visibility
 
   void loginUser() async {
+    if (!_formKey.currentState!.validate()) return;
+
     setState(() {
       isLoading = true;
     });
+
     await _authController
         .signInUsers(context: context, email: email, password: password)
-        .whenComplete(() {
+        .then((_) {
       setState(() {
         isLoading = false;
       });
+    }).catchError((error) {
+      setState(() {
+        isLoading = false;
+      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BaseScreen()),
+      );
+      print("Login Error: $error"); // Debugging log
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Getting the total height of the screen
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white, // Set background color to white
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        // Use SingleChildScrollView to prevent overflow
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Align to top-left
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
                 "assets/images/messi.jpg",
                 width: double.infinity,
                 height: screenHeight * 0.45,
-                fit: BoxFit
-                    .cover, // This ensures the image covers the entire area
+                fit: BoxFit.cover,
               ),
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
                   "Login Your Account",
-                  style: GoogleFonts.getFont(
-                    'Lato',
-                    color: Colors.black, // Text color set to black
+                  style: GoogleFonts.lato(
+                    color: Colors.black,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.2,
@@ -68,9 +78,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     horizontal: 10.0, vertical: 10.0),
                 child: Text(
                   "Email",
-                  style: GoogleFonts.getFont(
-                    'Nunito Sans',
-                    color: Colors.black, // Text color set to black
+                  style: GoogleFonts.nunitoSans(
+                    color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.2,
@@ -80,19 +89,15 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  onChanged: (value) {
-                    email = value;
-                  },
+                  onChanged: (value) => email = value,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Enter your Email";
-                    } else {
-                      return null;
                     }
+                    return null;
                   },
                   decoration: InputDecoration(
-                    fillColor: Colors.grey[
-                        200], // Input fields' background color (light gray)
+                    fillColor: Colors.grey[200],
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -100,10 +105,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     focusedBorder: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     labelText: 'Enter your Email',
-                    labelStyle: GoogleFonts.getFont(
-                      'Nunito Sans',
+                    labelStyle: GoogleFonts.nunitoSans(
                       fontSize: 14,
-                      color: Colors.black, // Label text color
+                      color: Colors.black,
                       letterSpacing: 0.1,
                     ),
                     prefixIcon: Padding(
@@ -122,9 +126,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
                   "Password",
-                  style: GoogleFonts.getFont(
-                    'Nunito Sans',
-                    color: Colors.black, // Text color set to black
+                  style: GoogleFonts.nunitoSans(
+                    color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.2,
@@ -134,19 +137,16 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  onChanged: (value) {
-                    password = value;
-                  },
+                  obscureText: !isPasswordVisible, // Hide/Show password
+                  onChanged: (value) => password = value,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Enter your password";
-                    } else {
-                      return null;
                     }
+                    return null;
                   },
                   decoration: InputDecoration(
-                    fillColor: Colors.grey[
-                        200], // Input field's background color (light gray)
+                    fillColor: Colors.grey[200],
                     filled: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -154,10 +154,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     focusedBorder: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     labelText: 'Enter your Password',
-                    labelStyle: GoogleFonts.getFont(
-                      'Nunito Sans',
+                    labelStyle: GoogleFonts.nunitoSans(
                       fontSize: 14,
-                      color: Colors.black, // Label text color
+                      color: Colors.black,
                       letterSpacing: 0.1,
                     ),
                     prefixIcon: Padding(
@@ -168,7 +167,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 20,
                       ),
                     ),
-                    suffixIcon: Icon(Icons.visibility, color: Colors.grey),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isPasswordVisible = !isPasswordVisible;
+                        });
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -178,53 +189,53 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Text(
                     'Need an Account ? ',
-                    style: GoogleFonts.getFont('Lato', fontSize: 15),
+                    style: GoogleFonts.lato(fontSize: 15),
                   ),
                   InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return RegistrationScreen();
-                            },
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Sign Up',
-                        style: GoogleFonts.getFont('Lato',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.orange),
-                      ))
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegistrationScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Sign Up',
+                      style: GoogleFonts.lato(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 20),
               Center(
                 child: InkWell(
-                  onTap: () async {
-                    if (_formKey.currentState!.validate()) {
-                      loginUser();
-                    }
-                  },
+                  onTap: loginUser,
                   child: Container(
                     width: 250,
                     height: 50,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        gradient: const LinearGradient(
-                            colors: [Colors.black, Colors.black45])),
+                      borderRadius: BorderRadius.circular(5),
+                      gradient: const LinearGradient(
+                        colors: [Colors.black, Colors.black45],
+                      ),
+                    ),
                     child: Center(
-                        child: isLoading
-                            ? CircularProgressIndicator(color: Colors.black)
-                            : Text(
-                                "Login",
-                                style: GoogleFonts.getFont('Lato',
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              )),
+                      child: isLoading
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              "Login",
+                              style: GoogleFonts.lato(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    ),
                   ),
                 ),
               ),

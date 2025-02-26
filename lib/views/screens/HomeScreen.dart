@@ -1,25 +1,26 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:turfit/views/screens/nav_screens/base_screen.dart';
-import 'package:turfit/views/screens/nav_screens/groups_screen.dart';
-import 'package:turfit/views/screens/nav_screens/profile_screen.dart';
-import 'package:turfit/views/screens/nav_screens/search_screen.dart';
-import 'package:turfit/views/screens/nav_screens/turfs_screen.dart';
+import 'package:turfit/views/screens/nav_screens/BaseScreen.dart';
+import 'package:turfit/views/screens/nav_screens/GroupsScreen.dart';
+import 'package:turfit/views/screens/nav_screens/ProfileScreen.dart';
+import 'package:turfit/views/screens/nav_screens/SearchScreen.dart';
+import 'package:turfit/views/screens/nav_screens/TurfsScreen.dart';
 
-class home_screen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  State<home_screen> createState() => _home_screenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _home_screenState extends State<home_screen> {
+class _HomeScreenState extends State<HomeScreen> {
   int _pageIndex = 0;
+
   final List<Widget> _pages = [
-    base_screen(),
+    BaseScreen(),
     search_screen(),
     turfs_screen(),
     groups_screen(),
     profile_screen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
