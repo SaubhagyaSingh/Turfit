@@ -65,7 +65,7 @@ class _NewsSliderState extends State<NewsSlider> {
 
     return CarouselSlider(
       options: CarouselOptions(
-        height: 250.0,
+        height: 150.0,
         autoPlay: true,
         enlargeCenterPage: true,
       ),
