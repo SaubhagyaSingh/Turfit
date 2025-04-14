@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:turfit/views/screens/nav_screens/BaseScreen.dart';
 import 'package:turfit/views/screens/nav_screens/GroupsScreen.dart';
 import 'package:turfit/views/screens/nav_screens/ProfileScreen.dart';
-import 'package:turfit/views/screens/nav_screens/SearchScreen.dart';
 import 'package:turfit/views/screens/nav_screens/TurfsScreen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,8 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     BaseScreen(),
-    search_screen(),
-    turfs_screen(),
+    TurfsScreen(),
     groups_screen(),
     profile_screen(),
   ];
@@ -35,8 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
         items: [
           BottomNavigationBarItem(
               icon: Image.asset("assets/icons/home.png"), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Image.asset("assets/icons/search.png"), label: "Search"),
           BottomNavigationBarItem(
               icon: Image.asset("assets/icons/turfs.png"), label: "Turfs"),
           BottomNavigationBarItem(

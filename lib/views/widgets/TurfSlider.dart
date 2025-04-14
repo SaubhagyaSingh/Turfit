@@ -1,37 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import '../env/turf_data.dart'; // Assuming the turf data is in this file
 
 class TurfSlider extends StatelessWidget {
-  final List<Map<String, dynamic>> services = [
-    {
-      "image": "assets/images/turf1.jpeg",
-      "cost": "\$50",
-      "timings": "9 AM - 5 PM",
-      "days": "Monday - Friday",
-    },
-    {
-      "image": "assets/images/turf1.jpeg",
-      "cost": "\$75",
-      "timings": "10 AM - 6 PM",
-      "days": "Monday - Friday",
-    },
-    {
-      "image": "assets/images/turf1.jpeg",
-      "cost": "\$100",
-      "timings": "8 AM - 4 PM",
-      "days": "Monday - Friday",
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return CarouselSlider(
       options: CarouselOptions(
-        height: 200.0, // Adjust height as needed
+        height: 220.0, // Adjust height as needed
         autoPlay: true,
         enlargeCenterPage: true,
       ),
-      items: services.map((service) {
+      items: turfServices.map((service) {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
@@ -57,7 +37,7 @@ class TurfSlider extends StatelessWidget {
               ),
               // Details take the remaining 40%
               Expanded(
-                flex: 3,
+                flex: 4,
                 child: Padding(
                   padding: EdgeInsets.all(8),
                   child: Column(
@@ -65,12 +45,24 @@ class TurfSlider extends StatelessWidget {
                     crossAxisAlignment:
                         CrossAxisAlignment.start, // Align text to the left
                     children: [
-                      Text(
-                        "${service["cost"]}",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w700),
+                      // Name and cost in the same row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            service["name"],
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            service["cost"],
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w700),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 5), // Add spacing
+                      SizedBox(height: 2), // Add spacing
+                      // Timings and days in another row
                       Row(
                         crossAxisAlignment:
                             CrossAxisAlignment.start, // Align text properly

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart'; // not just url_launcher_string
 
 import '../env/global_variables.dart';
 
@@ -30,6 +30,7 @@ class _NewsSliderState extends State<NewsSlider> {
         final data = json.decode(response.body);
         setState(() {
           news = data["results"].take(10).toList(); // Get first 5 articles
+          print(news);
           isLoading = false;
         });
       } else {
@@ -46,11 +47,17 @@ class _NewsSliderState extends State<NewsSlider> {
     }
   }
 
-  void _launchURL(String url) async {
-    if (await canLaunchUrlString(url)) {
-      await launchUrlString(url, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not launch $url';
+  void _launchURL(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+
+    try {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+      print("Launched $url");
+    } catch (e) {
+      print("Launch failed: $e");
     }
   }
 
