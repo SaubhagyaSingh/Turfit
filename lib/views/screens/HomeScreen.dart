@@ -5,13 +5,13 @@ import 'package:turfit/views/screens/nav_screens/ProfileScreen.dart';
 import 'package:turfit/views/screens/nav_screens/TurfsScreen.dart';
 
 class HomeScreen extends StatefulWidget {
+  static final ValueNotifier<int> navIndex = ValueNotifier<int>(0);
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _pageIndex = 0;
-
   final List<Widget> _pages = [
     BaseScreen(),
     TurfsScreen(),
@@ -21,31 +21,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _pageIndex,
-        onTap: (value) {
-          setState(() {
-            _pageIndex = value;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-              icon: Image.asset("assets/icons/home.png"), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Image.asset("assets/icons/turfs.png"), label: "Turfs"),
-          BottomNavigationBarItem(
-              icon: Image.asset("assets/icons/group.png"), label: "Groups"),
-          BottomNavigationBarItem(
-              icon: Image.asset("assets/icons/user.png"), label: "Profile"),
-        ],
-        backgroundColor: Colors.black,
-        selectedItemColor: Colors.deepPurpleAccent,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-      ),
-      body: _pages[_pageIndex],
+    return ValueListenableBuilder<int>(
+      valueListenable: HomeScreen.navIndex,
+      builder: (context, _pageIndex, _) {
+        return Scaffold(
+          backgroundColor: Colors.black,
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _pageIndex,
+            onTap: (value) => HomeScreen.navIndex.value = value,
+            items: [
+              BottomNavigationBarItem(
+                  icon: Image.asset("assets/icons/home.png"), label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Image.asset("assets/icons/turfs.png"), label: "Turfs"),
+              BottomNavigationBarItem(
+                  icon: Image.asset("assets/icons/group.png"), label: "Groups"),
+              BottomNavigationBarItem(
+                  icon: Image.asset("assets/icons/user.png"), label: "Profile"),
+            ],
+            backgroundColor: Colors.black,
+            selectedItemColor: Colors.deepPurpleAccent,
+            unselectedItemColor: Colors.grey,
+            type: BottomNavigationBarType.fixed,
+          ),
+          body: _pages[_pageIndex],
+        );
+      },
     );
   }
 }

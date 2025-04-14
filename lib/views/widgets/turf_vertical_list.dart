@@ -3,13 +3,40 @@ import '../env/turf_data.dart';
 import 'turf_card.dart';
 
 class TurfVerticalList extends StatefulWidget {
+  final String initialQuery; // Expecting the query here
+
+  const TurfVerticalList({Key? key, required this.initialQuery})
+      : super(key: key); // <-- Constructor expects this!
+
   @override
   State<TurfVerticalList> createState() => _TurfVerticalListState();
 }
 
 class _TurfVerticalListState extends State<TurfVerticalList> {
-  final TextEditingController _controller = TextEditingController();
-  List<Map<String, dynamic>> filteredServices = turfServices;
+  late TextEditingController _searchController; // Marked as late
+  late List<Map<String, dynamic>> filteredServices;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the controller and the filtered list
+    _searchController = TextEditingController(text: widget.initialQuery);
+    filteredServices = turfServices; // Initialize with all services
+    _filterTurfs(
+        widget.initialQuery); // Filter turfs based on the initial query
+  }
+
+  // This method will be called every time the parent widget updates the query
+  @override
+  void didUpdateWidget(covariant TurfVerticalList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialQuery != oldWidget.initialQuery) {
+      _searchController.text =
+          widget.initialQuery; // Update the text field value
+      _filterTurfs(
+          widget.initialQuery); // Filter turfs again if the query changes
+    }
+  }
 
   void _filterTurfs(String query) {
     setState(() {
@@ -18,13 +45,16 @@ class _TurfVerticalListState extends State<TurfVerticalList> {
         final cost = service['cost'].toString().toLowerCase();
         final timings = service['timings'].toString().toLowerCase();
         final days = service['days'].toString().toLowerCase();
+        final sports = (service['sports'] as List<dynamic>)
+            .map((sport) => sport.toString().toLowerCase())
+            .toList();
         final q = query.toLowerCase();
 
-        // Check if query matches name, cost, timings, or days
         return name.contains(q) ||
             cost.contains(q) ||
             timings.contains(q) ||
-            days.contains(q);
+            days.contains(q) ||
+            sports.any((sport) => sport.contains(q));
       }).toList();
     });
   }
@@ -37,10 +67,10 @@ class _TurfVerticalListState extends State<TurfVerticalList> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: TextField(
-            controller: _controller,
+            controller: _searchController,
             style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              hintText: "Search by name, cost, time, or days",
+              hintText: "Search by name, cost, time, days, or sports",
               hintStyle: TextStyle(color: Colors.white70),
               filled: true,
               fillColor: Colors.white12,
@@ -50,7 +80,7 @@ class _TurfVerticalListState extends State<TurfVerticalList> {
                 borderSide: BorderSide.none,
               ),
             ),
-            onChanged: _filterTurfs,
+            onChanged: _filterTurfs, // Trigger filtering on text change
           ),
         ),
 

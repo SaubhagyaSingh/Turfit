@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:turfit/controllers/my_search_controller.dart';
+
+import '../screens/HomeScreen.dart';
 
 class SportsGrid extends StatelessWidget {
   final List<Map<String, String>> sports = [
-    {
-      "name": "Football",
-      "image": "assets/icons/football.svg",
-    },
-    {
-      "name": "Basketball",
-      "image": "assets/icons/basketball.svg",
-    },
-    {
-      "name": "Tennis",
-      "image": "assets/icons/tennis.svg",
-    },
-    {
-      "name": "Cricket",
-      "image": "assets/icons/cricket.svg",
-    },
+    {"name": "Football", "image": "assets/icons/football.svg"},
+    {"name": "Basketball", "image": "assets/icons/basketball.svg"},
+    {"name": "Tennis", "image": "assets/icons/tennis.svg"},
+    {"name": "Cricket", "image": "assets/icons/cricket.svg"},
   ];
 
   @override
@@ -42,7 +33,8 @@ class SportsGrid extends StatelessWidget {
             name: sport["name"]!,
             iconPath: sport["image"]!,
             onTap: () {
-              print('${sport["name"]} tapped');
+              MySearchController.sportQuery.value = sport["name"]!;
+              HomeScreen.navIndex.value = 1; // navigate to Turfs tab
             },
           );
         },
@@ -70,13 +62,8 @@ class _AnimatedSportCardState extends State<_AnimatedSportCard>
     with SingleTickerProviderStateMixin {
   double _scale = 1.0;
 
-  void _onTapDown(_) {
-    setState(() => _scale = 0.95);
-  }
-
-  void _onTapUp(_) {
-    setState(() => _scale = 1.0);
-  }
+  void _onTapDown(_) => setState(() => _scale = 0.95);
+  void _onTapUp(_) => setState(() => _scale = 1.0);
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +98,7 @@ class _AnimatedSportCardState extends State<_AnimatedSportCard>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SvgPicture.asset(
-                    widget.iconPath,
-                    width: 50,
-                    height: 50,
-                  ),
+                  SvgPicture.asset(widget.iconPath, width: 50, height: 50),
                   SizedBox(height: 12),
                   Text(
                     widget.name,
