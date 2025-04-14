@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
     BaseScreen(),
     TurfsScreen(),
     groups_screen(),
-    profile_screen(),
+    Profile_Screen(),
   ];
 
   @override
